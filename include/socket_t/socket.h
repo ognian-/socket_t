@@ -51,9 +51,9 @@ public:
 	inline address getpeername();
 	inline void shutdown(shutdown_type how);
 	template <typename T>
-	inline typename T::type getsockopt();
+	inline typename T::represent getsockopt();
 	template <typename T>
-	inline void setsockopt(const typename T::type& value);
+	inline void setsockopt(const typename T::represent& value);
 	inline bool sockatmark();
 
 private:
@@ -143,7 +143,7 @@ void socket::shutdown(shutdown_type how) {
 }
 
 template <typename T>
-typename T::type socket::getsockopt() {
+typename T::represent socket::getsockopt() {
 	static_assert(T::readable);
 	typename T::type optval;
 	socklen_t optlen = T::size;
@@ -152,9 +152,10 @@ typename T::type socket::getsockopt() {
 }
 
 template <typename T>
-void socket::setsockopt(const typename T::type& value) {
+void socket::setsockopt(const typename T::represent& value) {
 	static_assert(T::writeable);
-	check_errno(::setsockopt, m_fd.load(), T::level, T::name, &value, T::size);
+	typename T::type optval = static_cast<typename T::type>(value);
+	check_errno(::setsockopt, m_fd.load(), T::level, T::name, &optval, T::size);
 }
 
 bool socket::sockatmark() {

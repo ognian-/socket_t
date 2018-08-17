@@ -3,9 +3,10 @@
 
 SOCKT_NAMESPACE_BEGIN
 
-template<int Level, int Name, typename Type, bool Readable, bool Writeable>
+template<int Level, int Name, typename Type, bool Readable, bool Writeable, typename Represent = Type>
 struct sockopt {
 	using type = Type;
+	using represent = Represent;
 	static constexpr auto size = sizeof(type);
 	static constexpr auto level = Level;
 	static constexpr auto name = Name;
