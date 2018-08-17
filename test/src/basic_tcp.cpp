@@ -1,6 +1,7 @@
 #include "socket_t_test/common.h"
 
 #include "socket_t/socket.h"
+#include "socket_t/proto_socket.h"
 #include "socket_t/proto_ip.h"
 
 static const std::string message = "Hello, world!";
@@ -16,7 +17,7 @@ static void client_thread() {
 
 static void server_thread() {
 	sock::socket serv_socket{sock::addr_family::inet, sock::sock_type::stream};
-	serv_socket.setsockopt(sock::opt_level::socket, sock::sockopt{sock::opt_name::reuseaddr, int(1)});
+	serv_socket.setsockopt<sock::proto_socket::reuseaddr>(true);
 	serv_socket.bind(sock::addr_ip4("127.0.0.1", 12345));
 	serv_socket.listen(1);
 	thread_except client{client_thread};

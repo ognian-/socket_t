@@ -27,7 +27,7 @@ int main(int /*argc*/, char* /*argv*/ []) {
 	}
 	
 	if (failed) {
-		std::cout << "Failed tests: " << failed << "/" << get_all_tests().size() << std::endl;
+		std::cerr << "Failed tests: " << failed << "/" << get_all_tests().size() << std::endl;
 		return EXIT_FAILURE;
 	} else {
 		std::cout << "All tests passed" << std::endl;

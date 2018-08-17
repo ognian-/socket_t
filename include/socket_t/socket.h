@@ -50,8 +50,10 @@ public:
 	inline address getsockname();
 	inline address getpeername();
 	inline void shutdown(shutdown_type how);
-	inline sockopt getsockopt(opt_level level, opt_name name);
-	inline void setsockopt(opt_level level, const sockopt& opt);
+	template <typename T>
+	inline typename T::type getsockopt();
+	template <typename T>
+	inline void setsockopt(const typename T::type& value);
 	inline bool sockatmark();
 
 private:
@@ -140,15 +142,19 @@ void socket::shutdown(shutdown_type how) {
 	check_errno(::shutdown, m_fd.load(), static_cast<int>(how));
 }
 
-sockopt socket::getsockopt(opt_level level, opt_name name) {
-	uint8_t optval[256];//TODO magic number
-	socklen_t optlen = sizeof(optval);
-	check_errno(::getsockopt, m_fd.load(), static_cast<int>(level), static_cast<int>(name), optval, &optlen);
-	return sockopt{name, optval, optlen};
+template <typename T>
+typename T::type socket::getsockopt() {
+	static_assert(T::readable);
+	typename T::type optval;
+	socklen_t optlen = T::size;
+	check_errno(::getsockopt, m_fd.load(), static_cast<int>(T::level), static_cast<int>(T::name), &optval, &optlen);
+	return optval;
 }
 
-void socket::setsockopt(opt_level level, const sockopt& opt) {
-	check_errno(::setsockopt, m_fd.load(), static_cast<int>(level), static_cast<int>(opt.m_name), opt.m_value, opt.m_length);
+template <typename T>
+void socket::setsockopt(const typename T::type& value) {
+	static_assert(T::writeable);
+	check_errno(::setsockopt, m_fd.load(), T::level, T::name, &value, T::size);
 }
 
 bool socket::sockatmark() {
