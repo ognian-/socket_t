@@ -81,4 +81,15 @@ private:
 
 };
 
+struct finally {
+	inline explicit finally(const std::function<void()>& code) noexcept: m_code{code} {}
+	inline ~finally() noexcept { try { m_code(); } catch(...) {} }
+private:
+	finally(const finally&) = delete;
+	finally(finally&&) = delete;
+	finally& operator=(const finally&) = delete;
+	finally& operator=(finally&&) = delete;
+	std::function<void()> m_code;
+};
+
 #endif // SOCKET_T_LANG_H
