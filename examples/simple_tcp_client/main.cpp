@@ -1,7 +1,15 @@
 #include <iostream>
 
+#include "socket_t/socket.h"
+#include "socket_t/proto_ip.h"
+
 #include "cmd_args.h"
 #include "validate.h"
+
+static void run_client(const sock::addr_ip4& addr) {
+	sock::socket cli_socket{sock::addr_family::inet, sock::sock_type::stream};
+	cli_socket.connect(addr);
+}
 
 int main(int argc, char** argv) {
 
@@ -27,6 +35,8 @@ int main(int argc, char** argv) {
 	}
 
 	std::cout << "Connecting to: " << server_ip_arg << ":" << server_port_arg << std::endl;
+
+	run_client({server_ip_arg, server_port});
 
 	std::cout << "Simple TCP client done." << std::endl;
 

@@ -5,6 +5,8 @@
 #include <limits>
 #include <regex>
 
+#include "socket_t/proto_ip.h"
+
 enum address_type : uint32_t {
 	address_type_ip_v4 = 1 << 0,
 	address_type_ip_v6 = 1 << 1,
@@ -35,7 +37,7 @@ bool validate_address(const std::string& in, uint32_t flags) {
 	return false;
 }
 
-int validate_port(const std::string& in) {
+sock::addr_ip4::port_t validate_port(const std::string& in) {
 	try {
 		auto port = std::stoi(in);
 		if (port < 1 || port > 65535) return -1;

@@ -22,7 +22,7 @@ struct address_private;
 class address {
 public:
 
-	constexpr operator addr_family() {
+	constexpr addr_family get_family() const {
 		return static_cast<addr_family>(m_storage.ss_family);
 	}
 
